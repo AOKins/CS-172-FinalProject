@@ -96,7 +96,12 @@ void NewGame(vector<Entity*> &entities){
     cin >> name;
     entities.push_back(new Player(name, 10, 0,0));
 
-    entities.push_back(new Skeleton("Skeleton", 5, 1,1));
+    cout << "How many skeletons do you want?\n";
+    int numSkel;
+
+    // Need to update so it is truly random and can include negatives for location //
+    for (int i = 0; i < rand() % 20; i++){
+      entities.push_back(new Skeleton("Skeleton", 5, rand() % 20, rand() % 20));}
 
 }
 
@@ -145,11 +150,15 @@ int main() {
       else {cout << "Not a correct response, type y or n\n"; continue;}
     }
     
-    cout << "stuff!";
+    // Will delete - just a note on how to use player actions //
+    dynamic_cast<Player*>(entities[p])->attack();
 
-    cout << entities.size();
-//    dynamic_cast<Player*>(entities[p])->attack();
-
-    PlayerTurn(p, entities);
-
+    while (dynamic_cast<Player*>(entities[p])->getHP() > 0){
+      // Player makes their turn, then checks to see if they got the key - need to make skeleton turn //
+      PlayerTurn(p, entities);
+      if ( dynamic_cast<Player*>(entities[p])->has_key() ){
+        break;
+      }
+    }
+    cout << "You either just died, or you got the key... still need to implement an endgame screen...";
 }
