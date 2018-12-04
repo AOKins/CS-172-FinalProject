@@ -22,9 +22,7 @@ using namespace std;
 // Idea, no grid but rather a description that a skeleton is near and challenge is imagining the situation //
 
 
-
-
-// Currently, simply makes an output text file and exits the program need to implement a system where it does the saving! //
+// Creates (or rewrites) a text file that contains information on the all of the entities and then exits the program //
 void SaveGame(string num, vector<Entity*> list){
   ofstream savefile;
   savefile.open("save" + num + ".txt");
@@ -49,7 +47,9 @@ void SaveGame(string num, vector<Entity*> list){
   exit(0);
 }
 
+// Takes the entity vector and fills it with entities that were written on the text file //
 void LoadGame(string name, vector<Entity*> &entities){
+  // Open text file //
   ifstream loadfile;
   loadfile.open( name + ".txt");
   if (loadfile.fail()){
@@ -61,6 +61,8 @@ void LoadGame(string name, vector<Entity*> &entities){
   bool load_key;
   int load_hp;
   int load_x, load_y;
+
+  
   while(!loadfile.eof()){
     loadfile >> word;
     // If it reached the last word (which would be a space due to how the entities are outputed), break since it'sn't reading new data //
