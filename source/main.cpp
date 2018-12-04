@@ -33,12 +33,12 @@ void SaveGame(string num, vector<Entity*> list){
     if (typeid(Player) == typeid(*list[i])){
       cout << "writing player\n";
       Player* p1 = dynamic_cast<Player*>(list[i]);
-      savefile << p1 << " ";}
+      savefile << p1 << endl;}
 
     if (typeid(Skeleton) == typeid(*list[i])){
       cout << "writing skeleton\n";
       Skeleton* s = dynamic_cast<Skeleton*>(list[i]);
-      savefile << s << " ";
+      savefile << s << endl;
     }
   }
   savefile.close();
@@ -49,13 +49,13 @@ void SaveGame(string num, vector<Entity*> list){
   exit(0);
 }
 
-void LoadGame(string name, vector<Entity*> entities){
+void LoadGame(string name, vector<Entity*> &entities){
   ifstream loadfile;
   loadfile.open( name + ".txt");
   if (loadfile.fail()){
     cout << "Failed to open load file!";
-    exit(0);
-  }
+    exit(0);}
+  
   string word;
   string load_name;
   bool load_key;
@@ -63,6 +63,9 @@ void LoadGame(string name, vector<Entity*> entities){
   int load_x, load_y;
   while(!loadfile.eof()){
     loadfile >> word;
+    // If it reached the last word (which would be a space due to how the entities are outputed), break since it'sn't reading new data //
+    if (loadfile.eof()){break;}
+    
     if (word == "Player"){
       // If the word is player, collect the data and push_back with a player entity //
       string load_name;
@@ -71,20 +74,22 @@ void LoadGame(string name, vector<Entity*> entities){
       loadfile >> load_key;
       loadfile >> load_x >> load_y;
       entities.push_back(new Player(load_name, load_hp, load_x, load_y));
+      cout << "Loaded Player entity...\n";
     }
-    if (word == "Skeleton"){
+    else if (word == "Skeleton"){
       // If the word is player, collect the data and push_back with a player entity //
       string load_name;
       loadfile >> load_name;
       loadfile >> load_hp;
       loadfile >> load_x >> load_y;
       entities.push_back(new Skeleton(load_name, load_hp, load_x, load_y));
+      cout << "Loaded Skeleton entity...\n";
     }
   }
 }
 
 
-void NewGame(vector<Entity*> entities){
+void NewGame(vector<Entity*> &entities){
   // Create player into the vector (No load game feature yet) //
     string name;
     cout << "Input a name for your character\n";
@@ -120,25 +125,30 @@ int const p = 0;
 int main() {
 
     vector<Entity*> entities;
+
     while (true){
-    cout << "Load Game? y/n ";
-    char confirm;
-    if (confirm == 'y'){
-      cout << "What is the name of your save? Don't include .txt\n";
-      string saveName;
-      cin >> saveName;
-      LoadGame(saveName, entities);
-      break;
-    }
-    else if (confirm == 'n'){
-      NewGame(entities);
-      break;
-    }
-    else {cout << "Not a correct response, type y or n\n";}
+      char confirm;
+      cout << "Load Game? y/n ";
+
+      cin >> confirm;
+      if (confirm == 'y'){
+        cout << "What is the name of your save? Don't include .txt\n";
+        string saveName;
+        cin >> saveName;
+        LoadGame(saveName, entities);
+        break;
+      }
+      else if (confirm == 'n'){
+        NewGame(entities);
+        break;
+      }
+      else {cout << "Not a correct response, type y or n\n"; continue;}
     }
     
+    cout << "stuff!";
 
-    dynamic_cast<Player*>(entities[p])->attack();
+    cout << entities.size();
+//    dynamic_cast<Player*>(entities[p])->attack();
 
     PlayerTurn(p, entities);
 
