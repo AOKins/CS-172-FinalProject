@@ -85,6 +85,7 @@ void LoadGame(string name, vector<Entity*> &entities){
       cout << "Loaded Skeleton entity...\n";
     }
   }
+  cout << "Load complete.\n\n";
 }
 
 void NewGame(vector<Entity*> &entities){
@@ -134,7 +135,7 @@ void SkeletonMovement(Skeleton* skeleton, Player* player){
   if (!(skel_loc == play_loc)) {
 
     // If the x distance is greater than or equal for y, move focus onto the x direction //
-    if ( abs(skel_loc.getLocX() - play_loc.getLocX()) > abs(skel_loc.getLocY() - play_loc.getLocY()) ){
+    if ( abs(skel_loc.getLocX() - play_loc.getLocX()) >= abs(skel_loc.getLocY() - play_loc.getLocY()) ){
     
       // If moving east reduces the distance, move east.  If it doesn't, then moving west is the only logical option //
       if ( abs( abs( (skel_loc.getLocX())+1) - play_loc.getLocX() ) < abs( skel_loc.getLocX() - play_loc.getLocX() ) ){
@@ -152,8 +153,7 @@ void SkeletonMovement(Skeleton* skeleton, Player* player){
       }
       else ( skeleton->move("south") );
     }
-    // If it's the same distance in the x and y direction, then just move north by default //
-    else {skeleton->move("north");}
+
   }
 }
 
@@ -169,10 +169,10 @@ void SkeletonTurn(Skeleton* skeleton, Player* player){
 int main() {
     srand (time(NULL));
     vector<Entity*> entities;
-
+    cout << "_BARE BONES 2_\n\n";
     while (true){
       char confirm;
-      cout << "Load Game? y/n ";
+      cout << "Load Game? y/n\n";
 
       cin >> confirm;
       if (confirm == 'y'){
