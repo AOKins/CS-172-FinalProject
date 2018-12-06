@@ -9,14 +9,7 @@ Player::Player(string set_name, int set_hp, int set_x, int set_y, bool set_key){
     key = set_key;
 }
 
-// A function that determines if the player is next to the entity by one//
-bool at(Location ploc, Location eloc){
-    if ( ploc == eloc ){
-        return true;
-    }
-    else {return false;}
-}
-
+// A function that returns a location that is one away from the starting in the given direction (for use in the attack function) //
 Location targeting(string direction, Location start){
     if (direction == "north")
         return Location(start.getLocX(),start.getLocY()+1);
@@ -37,9 +30,9 @@ void Player::attack(string direction, vector<Entity*> entities){
     else {
         // Skips 0, since that is always the player //
         for (int i = 1; i < entities.size(); i++){
-            
+
             // If the entity is where the player is targeting, it hurts the entity //
-            if ( at( targeting(direction, *loc), entities[0]->getLOC() ) ){
+            if ( targeting(direction, *loc) == entities[0]->getLOC() ){
                 cout << name << " successfully attacked " << entities[i]->getName() << endl;
                 entities[i]->hurt();
             }
