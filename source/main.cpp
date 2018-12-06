@@ -52,8 +52,8 @@ void LoadGame(string name, vector<Entity*> &entities){
   loadfile.open( name + ".txt");
   if (loadfile.fail()){
     cout << "Failed to open load file!";
-    exit(0);}
-  
+    exit(0);
+  }
   string word;
   string load_name;
   bool load_key;
@@ -129,26 +129,25 @@ void PlayerTurn(vector<Entity*> entities){
 
 // This function is where the skeleton determines which direction to go //
 void SkeletonMovement(Skeleton* skeleton, Player* player){
-  Location skel_loc = skeleton->getLOC();
-  Location play_loc = player->getLOC();
+
   // If the skeleton and the player are at the same location, the skeleton doesn't need to move //
-  if (!(skel_loc == play_loc)) {
+  if (!(skeleton->getLOC() == player->getLOC())) {
 
     // If the x distance is greater than or equal for y, move focus onto the x direction //
-    if ( abs(skel_loc.getLocX() - play_loc.getLocX()) >= abs(skel_loc.getLocY() - play_loc.getLocY()) ){
+    if ( abs(skeleton->getLOC().getLocX() - player->getLOC().getLocX()) >= abs(skeleton->getLOC().getLocY() - player->getLOC().getLocY()) ){
     
       // If moving east reduces the distance, move east.  If it doesn't, then moving west is the only logical option //
-      if ( abs( abs( (skel_loc.getLocX())+1) - play_loc.getLocX() ) < abs( skel_loc.getLocX() - play_loc.getLocX() ) ){
+      if ( abs( abs( (skeleton->getLOC().getLocX())+1) - player->getLOC().getLocX() ) < abs( skeleton->getLOC().getLocX() - player->getLOC().getLocX() ) ){
         skeleton->move("east");
       }
       else ( skeleton->move("west") );
     }
     
     // If the y distance is greater than for x, move focus onto the y direction //
-    else if ( abs(skel_loc.getLocX() - play_loc.getLocX() ) < abs( skel_loc.getLocY() - play_loc.getLocY() ) ){
+    else if ( abs(skeleton->getLOC().getLocX() - player->getLOC().getLocX() ) < abs( skeleton->getLOC().getLocY() - player->getLOC().getLocY() ) ){
     
       // Does the same thing as in terms of x, but instead with y //
-      if ( abs( skel_loc.getLocY()+1 - play_loc.getLocY() ) < abs( skel_loc.getLocY() - play_loc.getLocY() ) ){
+      if ( abs( skeleton->getLOC().getLocY()+1 - player->getLOC().getLocY() ) < abs( skeleton->getLOC().getLocY() - player->getLOC().getLocY() ) ){
         skeleton->move("north");
       }
       else ( skeleton->move("south") );
@@ -160,7 +159,6 @@ void SkeletonMovement(Skeleton* skeleton, Player* player){
 // This function is where the "A.I." does its magic for the most part //
 void SkeletonTurn(Skeleton* skeleton, Player* player){
   SkeletonMovement(skeleton, player);
-  // I think this is broken :/ //
   skeleton->attack(player);
 }
 

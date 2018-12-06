@@ -7,11 +7,7 @@
 void Skeleton::attack(Player* player){
   srand (time(NULL));
 
-  Location p_L = player->getLOC();
-  int p_x = p_L.getLocX();
-  int p_y = p_L.getLocY();
-
-  if (abs(loc->getLocX() - p_x) <= 1 || abs(loc->getLocY() - p_y) <= 1){
+  if (abs(loc->getLocX() - player->getLOC().getLocX()) <= 1 || abs(loc->getLocY() - player->getLOC().getLocX()) <= 1){
     if (rand() % 2 == 1){
       player->hurt();
       cout << player->getName() << " got grabbed by " << name << " and got spooked! HP now at " << player->getHP() << endl;
@@ -20,17 +16,15 @@ void Skeleton::attack(Player* player){
       cout << name << " reached out, but missed!\n";
     }
   }
+  else {cout << name << "reach out, but was no where near!!\n";}
 }
 
 
 ostream & operator<<(ostream & os, Skeleton &skeleton){
-  os << "Skeleton ";
-  os << skeleton.getName() << " "
-     << skeleton.getHP() << " ";
-
-     Location temp = skeleton.getLOC();
-      int x = temp.getLocX();
-      int y = temp.getLocY();
-  os  << x << " " << y;
+  os << "Skeleton "
+     << skeleton.getName() << " "
+     << skeleton.getHP() << " "
+     << skeleton.getLOC().getLocX() << " " 
+     << skeleton.getLOC().getLocY();
   return os;
 }

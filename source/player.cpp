@@ -39,14 +39,11 @@ void Player::attack(string direction, vector<Entity*> entities){
 
 // Overloads the << operator for us in saving the game //
 ostream & operator<<(ostream & os, Player &player){
-  os << "Player ";
-  os << player.getName() << " "
+  os << "Player "
+     << player.getName() << " "
      << player.getHP() << " "
-     << player.has_key() << " ";
-  
-     Location temp = player.getLOC();
-      int x = temp.getLocX();
-      int y = temp.getLocY();
-  os  << x << " " << y;
+     << player.has_key() << " " 
+     << player.getLOC().getLocX() << " " 
+     << player.getLOC().getLocY();
   return os;
 }
