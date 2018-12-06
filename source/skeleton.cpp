@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <cstdlib>
+#include <ctime>
 
 void Skeleton::attack(Player* player){
   srand (time(NULL));
