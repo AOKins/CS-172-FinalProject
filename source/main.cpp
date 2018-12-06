@@ -130,8 +130,10 @@ void PlayerTurn(vector<Entity*> entities){
 // This function is where the skeleton determines which direction to go //
 void SkeletonMovement(Skeleton* skeleton, Player* player){
 
-  // If the skeleton and the player are at the same location, the skeleton doesn't need to move //
-  if (!(skeleton->getLOC() == player->getLOC())) {
+  // If the skeleton and the player are at the same location or the distance in x and y is less than 5, the skeleton doesn't move //
+  if (!(skeleton->getLOC() == player->getLOC()) || 
+     (abs(skeleton->getLOC().getLocX() - player->getLOC().getLocX()) < 5) ||
+     (abs(skeleton->getLOC().getLocY() - player->getLOC().getLocY()) < 5)) {
 
     // If the x distance is greater than or equal for y, move focus onto the x direction //
     if ( abs(skeleton->getLOC().getLocX() - player->getLOC().getLocX()) >= abs(skeleton->getLOC().getLocY() - player->getLOC().getLocY()) ){
