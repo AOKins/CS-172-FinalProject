@@ -13,11 +13,9 @@ Location::Location(int start_x, int start_y){
 int Location::getLocX(){
     return x;
 }
-
 int Location::getLocY(){
     return y;
 }
-
 void Location::MoveUP(){
     y += 1;
 }
@@ -36,13 +34,10 @@ bool Location::operator==(Location other_loc) {
         return true;}
     else {return false;}
 }
-
-
 void Location::operator=(Location other_loc) {
     y = other_loc.getLocY();
     x = other_loc.getLocX();
 }
-
 ostream & operator<<(ostream & os, Location loc){
   os << "X: " << loc.getLocX() << endl;
   os << "Y: " << loc.getLocY() << endl;

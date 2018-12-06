@@ -1,7 +1,6 @@
 #include "player.h"
 #include <iostream>
 
-
 Player::Player(string set_name, int set_hp, int set_x, int set_y, bool set_key){
     name = set_name;
     hp = set_hp;
@@ -21,7 +20,6 @@ Location targeting(string direction, Location start){
         return Location(start.getLocX()+1,start.getLocY());
 }
 
-
 void Player::attack(string direction, vector<Entity*> entities){
     int chance = rand() % 2;
     if (chance == 1){
@@ -30,7 +28,6 @@ void Player::attack(string direction, vector<Entity*> entities){
     else {
         // Skips 0, since that is always the player //
         for (int i = 1; i < entities.size(); i++){
-
             // If the entity is where the player is targeting, it hurts the entity //
             if ( targeting(direction, *loc) == entities[0]->getLOC() ){
                 cout << name << " successfully attacked " << entities[i]->getName() << endl;
@@ -40,6 +37,7 @@ void Player::attack(string direction, vector<Entity*> entities){
     }
 }
 
+// Overloads the << operator for us in saving the game //
 ostream & operator<<(ostream & os, Player &player){
   os << "Player ";
   os << player.getName() << " "
