@@ -2,6 +2,7 @@
 #define _PLAYER_H_
 
 #include "entity.h"
+
 using namespace std;
 
 class Player : public Entity {
@@ -12,8 +13,8 @@ public:
     Player(string set_name, int set_hp, int set_x, int set_y) : Entity(set_name, set_hp, set_x, set_y) {}
 
     Player(string set_name, int set_hp, int set_x, int set_y, bool set_key);
-    void attack();
     bool has_key() {return key;}
+    void attack(string direction, vector<Entity*> entities);
     void hurt() {hp -= 1;}
 };
 

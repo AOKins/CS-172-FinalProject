@@ -122,7 +122,7 @@ void PlayerTurn(vector<Entity*> entities){
 
       if (command == "move"){   dynamic_cast<Player*>(entities[0])->move(info); }
 
-      else if (command == "attack"){  dynamic_cast<Player*>(entities[0])->attack(); }
+      else if (command == "attack"){  dynamic_cast<Player*>(entities[0])->attack(info, entities); }
 
       else{ cout<< "Not a known command\n";}
 }
@@ -192,15 +192,16 @@ int main() {
     while (dynamic_cast<Player*>(entities[0])->getHP() > 0){
       // Player makes their turn, then checks to see if they got the key - need to make skeleton turn //
       PlayerTurn(entities);
+      cout << "New Location for " << entities[0]->getName() << endl;
+      cout << entities[0]->getLOC() << endl;
 
      // A for loop where it gives each skeleton an individual turn //
       for (int i = 1; i < entities.size(); i++){
         SkeletonTurn( dynamic_cast<Skeleton*>(entities[i]), dynamic_cast<Player*>(entities[0]) );
       }
-      cout << "_Player_\n";
-      cout << entities[0]->getLOC() << endl;
+      // Show all of the locations for all of the skeletons
       for (int i = 1; i < entities.size(); i++){
-        cout << "_Skeleton_\n";
+        cout << entities[i]->getName() << endl;
         cout << entities[i]->getLOC() << endl;
       }
     }
