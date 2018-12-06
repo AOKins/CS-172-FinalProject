@@ -13,14 +13,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <typeinfo>
+#include <math.h>
 
 #include "player.h"
 #include "skeleton.h"
 
 using namespace std;
-
-// Idea, no grid but rather a description that a skeleton is near and challenge is imagining the situation //
-
 
 // Creates (or rewrites) a text file that contains information on the all of the entities and then exits the program //
 void SaveGame(string num, vector<Entity*> list){
@@ -62,7 +60,6 @@ void LoadGame(string name, vector<Entity*> &entities){
   int load_hp;
   int load_x, load_y;
 
-  
   while(!loadfile.eof()){
     loadfile >> word;
     // If it reached the last word (which would be a space due to how the entities are outputed), break since it'sn't reading new data //
@@ -75,7 +72,7 @@ void LoadGame(string name, vector<Entity*> &entities){
       loadfile >> load_hp;
       loadfile >> load_key;
       loadfile >> load_x >> load_y;
-      entities.push_back(new Player(load_name, load_hp, load_x, load_y));
+      entities.push_back(new Player(load_name, load_hp, load_x, load_y, load_key));
       cout << "Loaded Player entity...\n";
     }
     else if (word == "Skeleton"){
@@ -90,25 +87,29 @@ void LoadGame(string name, vector<Entity*> &entities){
   }
 }
 
-
 void NewGame(vector<Entity*> &entities){
   // Create player into the vector (No load game feature yet) //
     string name;
     cout << "Input a name for your character\n";
     cin >> name;
-    entities.push_back(new Player(name, 10, 0,0));
+    entities.push_back(new Player(name, 10, 0,0, false));
 
-    cout << "How many skeletons do you want?\n";
-    int numSkel;
-
-    // Need to update so it is truly random and can include negatives for location //
-    for (int i = 0; i < rand() % 20; i++){
-      entities.push_back(new Skeleton("Skeleton", 5, rand() % 20, rand() % 20));}
-
+    // Create a random number of skeletons and located randomly on the map//
+    for (int i = 0; i < rand() % 10 + 1; i++){
+      if (rand() % 4 == 1){
+        entities.push_back(new Skeleton("Spooky", 5, (rand() % 20 + -20), (rand() % 20 + -20) ));
+      }
+      else if (rand() % 4 == 2){
+        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20 + -20) ));
+      }
+      else {
+        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20) ));
+      }
+    }
 }
 
-
-void PlayerTurn(int const p, vector<Entity*> entities){
+// This function is where the player inputs commands //
+void PlayerTurn(vector<Entity*> entities){
       string command;
       string info;
       cout <<"Input command\n";
@@ -118,19 +119,55 @@ void PlayerTurn(int const p, vector<Entity*> entities){
         SaveGame(info, entities);
       }
 
-      if (command == "move"){   dynamic_cast<Player*>(entities[p])->move(info); }
+      if (command == "move"){   dynamic_cast<Player*>(entities[0])->move(info); }
 
-      else if (command == "attack"){  dynamic_cast<Player*>(entities[p])->attack(); }
+      else if (command == "attack"){  dynamic_cast<Player*>(entities[0])->attack(); }
 
       else{ cout<< "Not a known command\n";}
-
 }
 
-// Player is always at location 0 in the vector, so make a constant //
-int const p = 0;
+// This function is where the skeleton determines which direction to go //
+void SkeletonMovement(Skeleton* skeleton, Player* player){
+  Location skel_loc = skeleton->getLOC();
+  Location play_loc = player->getLOC();
+  // If the skeleton and the player are at the same location, the skeleton doesn't need to move //
+  if (!(skel_loc == play_loc)) {
+
+    // If the x distance is greater than or equal for y, move focus onto the x direction //
+    if ( abs(skel_loc.getLocX() - play_loc.getLocX()) > abs(skel_loc.getLocY() - play_loc.getLocY()) ){
+    
+      // If moving east reduces the distance, move east.  If it doesn't, then moving west is the only logical option //
+      if ( abs( abs( (skel_loc.getLocX())+1) - play_loc.getLocX() ) < abs( skel_loc.getLocX() - play_loc.getLocX() ) ){
+        skeleton->move("east");
+      }
+      else ( skeleton->move("west") );
+    }
+    
+    // If the y distance is greater than for x, move focus onto the y direction //
+    else if ( abs(skel_loc.getLocX() - play_loc.getLocX() ) < abs( skel_loc.getLocY() - play_loc.getLocY() ) ){
+    
+      // Does the same thing as in terms of x, but instead with y //
+      if ( abs( skel_loc.getLocY()+1 - play_loc.getLocY() ) < abs( skel_loc.getLocY() - play_loc.getLocY() ) ){
+        skeleton->move("north");
+      }
+      else ( skeleton->move("south") );
+    }
+    // If it's the same distance in the x and y direction, then just move north by default //
+    else {skeleton->move("north");}
+  }
+}
+
+// This function is where the "A.I." does its magic for the most part //
+void SkeletonTurn(Skeleton* skeleton, Player* player){
+  SkeletonMovement(skeleton, player);
+  // I think this is broken :/ //
+  skeleton->attack(player);
+}
+
+
 
 int main() {
-
+    srand (time(NULL));
     vector<Entity*> entities;
 
     while (true){
@@ -151,16 +188,22 @@ int main() {
       }
       else {cout << "Not a correct response, type y or n\n"; continue;}
     }
-    
-    // Will delete - just a note on how to use player actions //
-    dynamic_cast<Player*>(entities[p])->attack();
 
-    while (dynamic_cast<Player*>(entities[p])->getHP() > 0){
+    while (dynamic_cast<Player*>(entities[0])->getHP() > 0){
       // Player makes their turn, then checks to see if they got the key - need to make skeleton turn //
-      PlayerTurn(p, entities);
-      if ( dynamic_cast<Player*>(entities[p])->has_key() ){
-        break;
+      PlayerTurn(entities);
+
+     // A for loop where it gives each skeleton an individual turn //
+      for (int i = 1; i < entities.size(); i++){
+        SkeletonTurn( dynamic_cast<Skeleton*>(entities[i]), dynamic_cast<Player*>(entities[0]) );
+      }
+      cout << "_Player_\n";
+      cout << entities[0]->getLOC() << endl;
+      for (int i = 1; i < entities.size(); i++){
+        cout << "_Skeleton_\n";
+        cout << entities[i]->getLOC() << endl;
       }
     }
-    cout << "You either just died, or you got the key... still need to implement an endgame screen...";
+
+    cout << "You either just died, or you got the key... still need to implement...";
 }

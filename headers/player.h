@@ -9,13 +9,14 @@ private:
   bool key;
 public:
     Player() : Entity() {}
-    Player(string set_name, int set_hp, int set_x, int set_y) : Entity( set_name, set_hp, set_x, set_y) {}
-    bool has_key();
-    void move(string direction);
+    Player(string set_name, int set_hp, int set_x, int set_y) : Entity(set_name, set_hp, set_x, set_y) {}
+
+    Player(string set_name, int set_hp, int set_x, int set_y, bool set_key);
     void attack();
-    void draw();
+    bool has_key() {return key;}
+    void hurt() {hp -= 1;}
 };
 
-ostream& operator<<(ostream & os, Player * &player);
+ostream& operator<<(ostream & os, Player &player);
 
 #endif

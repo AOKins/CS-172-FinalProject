@@ -1,5 +1,7 @@
 #ifndef _LOCATION_H_
 #define _LOCATION_H_
+#include <iostream>
+using namespace std;
 
 class Location{
 protected:
@@ -17,7 +19,9 @@ public:
 
     bool operator==(Location other_loc);
     void operator=(Location other_loc);
+
 };
 
+ostream& operator<<(ostream & os, Location loc);
 
 #endif
