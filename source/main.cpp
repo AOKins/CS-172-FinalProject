@@ -20,29 +20,25 @@
 
 using namespace std;
 
-// Creates (or rewrites) a text file that contains information on the all of the entities and then exits the program //
-void SaveGame(string num, vector<Entity*> list){
-  ofstream savefile;
-  savefile.open("save" + num + ".txt");
-  for (int i = 0; i < list.size(); i++){
-    // If the entity is the player, write as a player //
-    if (typeid(Player) == typeid(*list[i])){
-      cout << "writing player\n";
-      Player* p1 = dynamic_cast<Player*>(list[i]);
-      savefile << p1 << endl;}
+void NewGame(vector<Entity*> &entities){
+  // Create player into the vector (No load game feature yet) //
+    string name;
+    cout << "Input a name for your character\n";
+    cin >> name;
+    entities.push_back(new Player(name, 10, 0,0, false));
 
-    if (typeid(Skeleton) == typeid(*list[i])){
-      cout << "writing skeleton\n";
-      Skeleton* s = dynamic_cast<Skeleton*>(list[i]);
-      savefile << s << endl;
+    // Create a random number of skeletons and located randomly on the map//
+    for (int i = 0; i < rand() % 10 + 1; i++){
+      if (rand() % 4 == 1){
+        entities.push_back(new Skeleton("Spooky", 5, (rand() % 20 + -20), (rand() % 20 + -20) ));
+      }
+      else if (rand() % 4 == 2){
+        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20 + -20) ));
+      }
+      else {
+        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20) ));
+      }
     }
-  }
-  savefile.close();
-  for (int i = 0; i < list.size(); i++){
-    delete list[i];
-  }
-  cout << "Game Saved";
-  exit(0);
 }
 
 // Takes the entity vector and fills it with entities that were written on the text file //
@@ -88,43 +84,29 @@ void LoadGame(string name, vector<Entity*> &entities){
   cout << "Load complete.\n\n";
 }
 
-void NewGame(vector<Entity*> &entities){
-  // Create player into the vector (No load game feature yet) //
-    string name;
-    cout << "Input a name for your character\n";
-    cin >> name;
-    entities.push_back(new Player(name, 10, 0,0, false));
+// Creates (or rewrites) a text file that contains information on the all of the entities and then exits the program //
+void SaveGame(string num, vector<Entity*> list){
+  ofstream savefile;
+  savefile.open("save" + num + ".txt");
+  for (int i = 0; i < list.size(); i++){
+    // If the entity is the player, write as a player //
+    if (typeid(Player) == typeid(*list[i])){
+      cout << "writing player\n";
+      Player* p1 = dynamic_cast<Player*>(list[i]);
+      savefile << p1 << endl;}
 
-    // Create a random number of skeletons and located randomly on the map//
-    for (int i = 0; i < rand() % 10 + 1; i++){
-      if (rand() % 4 == 1){
-        entities.push_back(new Skeleton("Spooky", 5, (rand() % 20 + -20), (rand() % 20 + -20) ));
-      }
-      else if (rand() % 4 == 2){
-        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20 + -20) ));
-      }
-      else {
-        entities.push_back(new Skeleton("Scary", 5, (rand() % 20 ), (rand() % 20) ));
-      }
+    if (typeid(Skeleton) == typeid(*list[i])){
+      cout << "writing skeleton\n";
+      Skeleton* s = dynamic_cast<Skeleton*>(list[i]);
+      savefile << s << endl;
     }
-}
-
-// This function is where the player inputs commands //
-void PlayerTurn(vector<Entity*> entities){
-      string command;
-      string info;
-      cout <<"Input command\n";
-      cin >> command;
-      cin >> info;
-      if (command == "save"){
-        SaveGame(info, entities);
-      }
-
-      if (command == "move"){   dynamic_cast<Player*>(entities[0])->move(info); }
-
-      else if (command == "attack"){  dynamic_cast<Player*>(entities[0])->attack(info, entities); }
-
-      else{ cout<< "Not a known command\n";}
+  }
+  savefile.close();
+  for (int i = 0; i < list.size(); i++){
+    delete list[i];
+  }
+  cout << "Game Saved";
+  exit(0);
 }
 
 // This function is where the skeleton determines which direction to go //
@@ -158,13 +140,32 @@ void SkeletonMovement(Skeleton* skeleton, Player* player){
   }
 }
 
+
+// This function is where the player inputs commands //
+void PlayerTurn(vector<Entity*> entities){
+      string command;
+      string info;
+      cout <<"Input command\n";
+      cin >> command;
+      cin >> info;
+      if (command == "save"){
+        SaveGame(info, entities);
+      }
+
+      if (command == "move"){   dynamic_cast<Player*>(entities[0])->move(info); }
+
+      else if (command == "attack"){  dynamic_cast<Player*>(entities[0])->attack(info, entities); }
+
+      else{ cout<< "Not a known command\n";}
+}
+
+
+
 // This function is where the "A.I." does its magic for the most part //
 void SkeletonTurn(Skeleton* skeleton, Player* player){
   SkeletonMovement(skeleton, player);
   skeleton->attack(player);
 }
-
-
 
 int main() {
     srand (time(NULL));
@@ -208,3 +209,17 @@ int main() {
 
     cout << "You either just died, or you got the key... still need to implement...";
 }
+
+
+
+/*
+  Things to do for the game:
+   1 Implement win/lose conditions with some kind of results
+      Introduce and implement key item and system of finding it
+      Implement a win condition for when player has key (maybe have a car located at 0,1 that you must get to?)
+   2 Introduce and implement walls and a map from said walls (I am thinking create item class with type and some stuff)
+      Implement a more functional system for navigation
+      Make natural max map size using walls
+   3 Introduce and implement a more user-friendly display
+
+*/
