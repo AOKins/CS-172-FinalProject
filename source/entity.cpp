@@ -2,10 +2,25 @@
 
 Entity::Entity(){}
 
-Entity::Entity(string set_name, int set_hp, int set_x, int set_y) {
+Entity::Entity(string set_name, int set_hp, Location* set_loc) {
     name = set_name;
     hp = set_hp;
-    loc = new Location(set_x, set_y);
+    loc = set_loc;
+}
+
+// For things such as movement and attacking, where knowing the location of what is ahead is important //
+Location Entity::targeting(string direction, Location start){
+    if (direction == "north")
+        return Location(start.getLocX(),start.getLocY()+1);
+    else if (direction == "south")
+        return Location(start.getLocX(),start.getLocY()-1);
+    else if (direction == "west")
+        return Location(start.getLocX()-1,start.getLocY());
+    else if (direction == "east")
+        return Location(start.getLocX()+1,start.getLocY());
+    else {
+      return start;
+    }
 }
 
 string Entity::getName() {
@@ -18,20 +33,4 @@ int Entity::getHP() {
 
 Location Entity::getLOC(){
   return *loc;
-}
-
-// Accesses the location of the entity and moves it in the given direction //
-void Entity::move(string direction){
-    if (direction == "north"){
-        loc->MoveUP();
-    }
-    else if (direction == "south"){
-        loc->MoveDOWN();
-    }
-    else if (direction == "west"){
-        loc->MoveLEFT();
-    }
-    else if (direction == "east"){
-        loc->MoveRIGHT();
-    }
 }

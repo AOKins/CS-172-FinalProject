@@ -29,6 +29,7 @@ void Location::MoveRIGHT(){
     x += 1;
 }
 
+// Overloaded operators for use in the program //
 bool Location::operator==(Location other_loc) {
     if (y == other_loc.getLocY() && x == other_loc.getLocX()){
         return true;}

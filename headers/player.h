@@ -10,12 +10,15 @@ private:
   bool key;
 public:
     Player() : Entity() {}
-    Player(string set_name, int set_hp, int set_x, int set_y) : Entity(set_name, set_hp, set_x, set_y) {}
+    Player(string set_name, int set_hp, Location* set_loc) : Entity(set_name, set_hp, set_loc) {}
 
-    Player(string set_name, int set_hp, int set_x, int set_y, bool set_key);
-    bool has_key() {return key;}
+    Player(string set_name, int set_hp, Location * set_loc, bool set_key);
+
     void attack(string direction, vector<Entity*> entities);
     void hurt() {hp -= 1;}
+    void move(string direction, vector<Item*> items);
+    bool has_key() {return key;}
+    void found_key();
 };
 
 ostream& operator<<(ostream & os, Player &player);

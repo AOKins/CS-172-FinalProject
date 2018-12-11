@@ -4,7 +4,7 @@
 using namespace std;
 
 class Location{
-protected:
+private:
     int x,y;
 public:
     Location();

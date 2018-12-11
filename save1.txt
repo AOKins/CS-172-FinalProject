@@ -1,4 +1,0 @@
-Player Gen 10 0 0 0
-Skeleton Skeleton 5 1 1
-Skeleton Skeleton 5 1 1
-Skeleton Skeleton 5 1 1
